@@ -34,6 +34,13 @@ gem install capistrano-rsync
 Require it at the top of your `Capfile` (or `config/deploy.rb`):
 ```ruby
 require "capistrano/rsync"
+
+```
+
+Override the default scm-tasks:
+```ruby
+set :scm, :rsync
+set :rsync_scm, :git
 ```
 
 Set some `rsync_options` to your liking:
@@ -65,6 +72,7 @@ some `--exclude` options to Rsync:
 set :rsync_options, %w[
   --recursive --delete --delete-excluded
   --exclude .git*
+  --exclude .svn*
   --exclude /config/database.yml
   --exclude /test/***
 ]
@@ -94,8 +102,11 @@ Set Capistrano variables with `set name, value`.
 
 Name          | Default | Description
 --------------|---------|------------
-repo_url      | `.` | The path or URL to a Git repository to clone from.  
-branch        | `master` | The Git branch to checkout.  
+rsync_scm     | `git`   | Available options: `git`, `svn`.
+rsync_scm_username | nil | Used for Svn (Optional).
+rsync_scm_password | nil | Used for Svn (Optional).
+repo_url      | `.` | The path or URL to a SCM repository to clone from.
+branch        | `master` | The Git branch to checkout. This is ignored for Svn.
 rsync_stage   | `tmp/deploy` | Path where to clone your repository for staging, checkouting and rsyncing. Can be both relative or absolute.
 rsync_cache   | `shared/deploy` | Path where to cache your repository on the server to avoid rsyncing from scratch each time. Can be both relative or absolute.<br> Set to `nil` if you want to disable the cache.
 rsync_options | `[]` | Array of options to pass to `rsync`.  

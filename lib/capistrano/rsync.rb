@@ -26,7 +26,7 @@ Rake::Task["deploy:updating"].enhance ["rsync:hook_scm"]
 
 desc "Stage and rsync to the server (or its cache)."
 task :rsync => %w[rsync:stage] do
-  roles(:all).each do |role|
+  on roles(:all) do |role|
     user = role.user + "@" if !role.user.nil?
 
     rsync = %w[rsync]
@@ -41,7 +41,7 @@ end
 namespace :rsync do
   desc "Load rsync default options."
   task :defaults do
-    set :rsync_options, []
+    set :rsync_options, %w[--recursive --delete --delete-excluded  --exclude .git*]
     set :rsync_copy, "rsync --archive --acls --xattrs"
     
      # Scm to use.
